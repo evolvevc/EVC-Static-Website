@@ -1,0 +1,138 @@
+/* ==========================================================================
+   Animated interactive graphics (replace photographs). SVG + CSS only.
+   Light, logo green + yellow, thin lines, calm motion. The final state is visible without JS.
+   ========================================================================== */
+/* Quiet frame: one hairline, white ground. Inside a graphic the logo yellow is remapped to mint so the page keeps a single accent. */
+.gfx { --yellow-50: #f3faf7; --yellow-100: #e2f6ee; --yellow-300: #bfeedd; --yellow-400: #7fdcbc; --yellow-500: #08a672; position: relative; display: grid; place-items: center; width: 100%; padding: clamp(34px, 4vw, 44px) clamp(14px, 2.4vw, 28px) clamp(14px, 2.4vw, 28px); border: 1px solid var(--line-strong); border-radius: var(--radius-lg); overflow: hidden; isolation: isolate; --mx: 0; --my: 0; }
+.gfx__cap { position: absolute; top: 14px; left: 16px; display: inline-flex; align-items: center; gap: 8px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-mute); z-index: 2; }
+.gfx__cap::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--green-500); }
+.gfx--4x3 { aspect-ratio: 4 / 3; } .gfx--1x1 { aspect-ratio: 1; } .gfx--4x5 { aspect-ratio: 4 / 5; } .gfx--5x4 { aspect-ratio: 5 / 4; } .gfx--16x10 { aspect-ratio: 16 / 10; } .gfx--21x9 { aspect-ratio: 21 / 9; } .gfx--3x2 { aspect-ratio: 3 / 2; } .gfx--9x10 { aspect-ratio: 9 / 10; } .gfx--auto { aspect-ratio: auto; }
+.gfx--tint { background: var(--green-50); }
+.gfx--sun { background: var(--paper); }
+.gfx--paper { background: var(--paper); }
+.gfx--white { background: var(--white); }
+.gfx--clear { background: transparent; border-color: transparent; padding: 0; } .gfx--clear::before, .gfx--clear::after, .gfx--clear .gfx__cap { display: none; }
+/* a filled frame takes its graphic's own proportions, so the artwork covers the frame */
+.gfx--t-growth { aspect-ratio: 560 / 452; }
+.gfx--t-venn { aspect-ratio: 560 / 421; }
+.gfx--t-shield { aspect-ratio: 560 / 504; }
+.gfx--t-pipeline { aspect-ratio: 560 / 246; }
+.gfx--t-stack { aspect-ratio: 560 / 607; }
+.gfx--t-rocket { aspect-ratio: 560 / 679; }
+.gfx--t-radar { aspect-ratio: 560 / 578; }
+.gfx--t-network { aspect-ratio: 560 / 522; }
+.gfx--t-flow { aspect-ratio: 560 / 355; }
+.gfx--t-stairs { aspect-ratio: 560 / 524; }
+.gfx--t-compass { aspect-ratio: 560 / 494; }
+.gfx--t-target { aspect-ratio: 560 / 560; }
+.gfx.is-static *, .gfx.is-static::before { animation: none !important; }
+.gfx.is-static .p-packet, .gfx.is-static .f-p, .gfx.is-static .n-packet, .gfx.is-static .o-pkt { display: none; }
+.g { width: 100%; height: 100%; max-height: 100%; overflow: visible; }
+.js .gfx:not(.is-in) .g { opacity: 0; } .js .gfx .g { transition: opacity 0.6s; }
+.g-t { font: 600 14px var(--font-text); fill: var(--ink); } .g-t--b { font-weight: 700; font-family: var(--font-display); font-size: 14px; } .g-t--m { fill: var(--ink-mute); font-size: 13px; }
+
+/* growth */
+.g-grid line { stroke: rgba(21, 59, 50, 0.1); stroke-dasharray: 3 5; }
+.g-bar { fill: var(--green-500); transform-box: fill-box; transform-origin: bottom; transition: fill 0.25s; } .g-bar--y { fill: var(--yellow-400); }
+.col { cursor: pointer; } .col:hover .g-bar { fill: var(--green-600); } .col:hover .g-bar--y { fill: var(--yellow-500); }
+.g-draw { fill: none; stroke: var(--ink); stroke-opacity: 0.7; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 420; }
+.g-dot { fill: #fff; stroke: var(--green-700); stroke-width: 2.5; transform-box: fill-box; transform-origin: center; }
+.js .gfx.is-in .g-bar { animation: g-grow 1s var(--ease) backwards; }
+.js .gfx.is-in .col:nth-of-type(2) .g-bar { animation-delay: 0.12s; } .js .gfx.is-in .col:nth-of-type(3) .g-bar { animation-delay: 0.24s; } .js .gfx.is-in .col:nth-of-type(4) .g-bar { animation-delay: 0.36s; } .js .gfx.is-in .col:nth-of-type(5) .g-bar { animation-delay: 0.48s; }
+.js .gfx.is-in .g-draw { animation: g-draw 1.8s ease 0.8s backwards; } .js .gfx.is-in .g-dot { animation: g-pop 0.5s var(--ease) backwards; animation-delay: 1.2s; }
+@keyframes g-grow { from { transform: scaleY(0); } } @keyframes g-draw { from { stroke-dashoffset: 420; } } @keyframes g-pop { from { transform: scale(0); } }
+
+/* orbit: a fixed constellation of covered markets */
+.o-ring { fill: none; stroke: var(--line-strong); stroke-width: 1; stroke-dasharray: 3 6; } .o-ring--2 { stroke: var(--green-200); }
+.o-line { fill: none; stroke: var(--green-500); stroke-opacity: 0.45; stroke-width: 1.5; stroke-dasharray: 4 5; }
+.o-pkt { fill: var(--yellow-400); stroke: var(--yellow-500); stroke-width: 1.5; }
+.o-node { cursor: pointer; } .o-halo { fill: var(--green-100); opacity: 0.8; transform-box: fill-box; transform-origin: center; transition: transform 0.35s var(--ease), fill 0.3s; } .o-node:hover .o-halo { transform: scale(1.5); fill: var(--yellow-100); }
+.o-dot { fill: #fff; stroke: var(--green-600); stroke-width: 2.5; } .o-in { fill: var(--green-500); transition: fill 0.3s; } .o-node:hover .o-in { fill: var(--yellow-500); }
+.o-name { font: 700 17px var(--font-display); fill: var(--ink); paint-order: stroke; stroke: #fff; stroke-width: 5px; stroke-linejoin: round; }
+.o-sub { font: 700 12px var(--font-text); fill: var(--ink-mute); letter-spacing: 0.08em; text-transform: uppercase; paint-order: stroke; stroke: #fff; stroke-width: 4px; }
+.o-core-bg { fill: #fff; stroke: var(--green-500); stroke-width: 2; }
+.o-pulse { fill: none; stroke: var(--green-500); stroke-width: 1.5; transform-box: fill-box; transform-origin: center; opacity: 0; } .js .gfx.is-in .o-pulse { animation: o-ping 4.4s ease-out infinite; } .js .gfx.is-in .o-pulse--2 { animation-delay: 2.2s; }
+.js .gfx.is-in .o-line { animation: o-draw 1.4s ease backwards; } .js .gfx.is-in .o-node { animation: g-pop 0.6s var(--ease) backwards; transform-box: fill-box; transform-origin: center; }
+@keyframes o-ping { 0% { transform: scale(1); opacity: 0.55; } 100% { transform: scale(2.3); opacity: 0; } } @keyframes o-draw { from { stroke-dashoffset: 120; opacity: 0; } }
+.g--orbit .o-core { translate: calc(var(--mx) * 6px) calc(var(--my) * 6px); transition: translate 0.4s var(--ease); }
+
+/* pipeline */
+.p-rail { stroke: var(--green-200); stroke-width: 2; stroke-dasharray: 2 8; stroke-linecap: round; fill: none; }
+.p-step rect { fill: var(--green-500); transition: fill 0.25s; } .p-step:hover rect { fill: var(--green-400); } .p-step .g-t--b { fill: var(--ink); font-size: 14px; }
+.p-check { fill: none; stroke: var(--green-600); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 30; }
+.p-packet { fill: var(--yellow-400); stroke: var(--yellow-500); stroke-width: 2; }
+.js .gfx.is-in .p-check { animation: p-draw 8s ease-in-out infinite; } .js .gfx.is-in .p-step:nth-of-type(2) .p-check { animation-delay: 1.8s; } .js .gfx.is-in .p-step:nth-of-type(3) .p-check { animation-delay: 3.6s; } .js .gfx.is-in .p-step:nth-of-type(4) .p-check { animation-delay: 5.4s; }
+@keyframes p-draw { 0%, 10% { stroke-dashoffset: 30; } 22%, 100% { stroke-dashoffset: 0; } }
+
+/* venn */
+.v-c { stroke-width: 1.5; } .v-c--a { fill: rgba(10, 191, 132, 0.3); stroke: var(--green-600); } .v-c--b { fill: rgba(15, 38, 32, 0.05); stroke: var(--ink-soft); }
+.v-left { translate: calc(var(--mx) * -10px) calc(var(--my) * -5px); transition: translate 0.4s var(--ease); } .v-right { translate: calc(var(--mx) * 10px) calc(var(--my) * 5px); transition: translate 0.4s var(--ease); }
+.js .gfx.is-in .v-left { animation: v-l 8s ease-in-out infinite; } .js .gfx.is-in .v-right { animation: v-r 8s ease-in-out infinite; }
+@keyframes v-l { 50% { transform: translateX(10px); } } @keyframes v-r { 50% { transform: translateX(-10px); } }
+.v-badge { fill: #fff; stroke: var(--green-600); stroke-width: 1.5; } .v-ring { fill: none; stroke: var(--green-600); stroke-width: 1; stroke-dasharray: 3 5; }
+
+/* stack */
+.s-plate { --plate: var(--green-500); transition: translate 0.35s var(--ease); cursor: pointer; } .s-plate--2 { --plate: var(--yellow-400); } .s-plate--3 { --plate: var(--green-200); }
+.s-top { fill: var(--plate); stroke: rgba(255, 255, 255, 0.7); stroke-width: 1.5; } .s-side { fill: var(--plate); filter: brightness(0.82); } .s-side--r { filter: brightness(0.7); }
+.s-plate:hover { translate: 0 -12px; }
+.js .gfx.is-in .s-plate { animation: s-in 0.9s var(--ease) backwards; } .js .gfx.is-in .s-plate--2 { animation-delay: 0.2s; } .js .gfx.is-in .s-plate--1 { animation-delay: 0.4s; }
+@keyframes s-in { from { transform: translateY(-40px); opacity: 0; } }
+
+/* shield */
+.sh-ring { fill: none; stroke: var(--line-strong); stroke-width: 1; stroke-dasharray: 3 7; }
+.sh-shape { fill: var(--green-100); stroke: var(--green-600); stroke-width: 3; stroke-linejoin: round; }
+.sh-check { fill: none; stroke: var(--green-600); stroke-width: 12; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 140; }
+.sh-doc rect { fill: #fff; stroke: var(--green-600); stroke-width: 2; } .sh-doc path { stroke: var(--yellow-500); stroke-width: 2.5; fill: none; stroke-linecap: round; }
+.js .gfx.is-in .sh-check { animation: sh-check 4s ease-in-out infinite; } .js .gfx.is-in .sh-shape { animation: sh-glow 4s ease-in-out infinite; } .js .gfx.is-in .sh-doc { animation: sh-float 6s ease-in-out infinite; } .js .gfx.is-in .sh-doc:nth-of-type(odd) { animation-delay: 1.6s; }
+@keyframes sh-check { 0%, 20% { stroke-dashoffset: 140; } 50%, 100% { stroke-dashoffset: 0; } } @keyframes sh-glow { 50% { fill: var(--green-200); } } @keyframes sh-float { 50% { transform: translateY(-6px); } }
+
+/* rocket */
+.r-path { fill: none; stroke: var(--green-500); stroke-opacity: 0.5; stroke-width: 2; stroke-dasharray: 3 8; stroke-linecap: round; }
+.r-mile circle { fill: #fff; stroke: var(--green-600); stroke-width: 2.5; transform-box: fill-box; transform-origin: center; } .r-mile path { fill: none; stroke: var(--green-600); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.js .gfx.is-in .r-mile circle { animation: r-pop 9s ease-in-out infinite; } .js .gfx.is-in .r-mile--1 circle { animation-delay: 2.6s; } .js .gfx.is-in .r-mile--2 circle { animation-delay: 5.2s; } .js .gfx.is-in .r-mile--3 circle { animation-delay: 8.2s; }
+.r-body { fill: var(--green-500); stroke: var(--green-700); stroke-width: 1.5; } .r-fin { fill: var(--yellow-400); } .r-win { fill: #fff; stroke: var(--green-700); stroke-width: 1.5; } .r-flame { fill: var(--yellow-400); transform-box: fill-box; transform-origin: right center; } .js .gfx.is-in .r-flame { animation: r-flame 0.35s ease-in-out infinite alternate; }
+@keyframes r-pop { 0%, 100% { transform: scale(1); } 5% { transform: scale(1.35); } 10% { transform: scale(1); } } @keyframes r-flame { to { transform: scaleX(1.35); } }
+
+/* radar */
+.rd-ring { fill: none; stroke: var(--line-strong); stroke-width: 1; } .rd-cross { stroke: var(--line-strong); stroke-width: 1; }
+.rd-sweep { transform-box: view-box; transform-origin: 200px 200px; } .rd-sweep path { fill: rgba(10, 191, 132, 0.22); } .rd-sweep line { stroke: var(--green-600); stroke-width: 2; } .js .gfx.is-in .rd-sweep { animation: spin 8s linear infinite; }
+.rd-blip circle { fill: var(--yellow-400); stroke: var(--yellow-500); stroke-width: 2; } .rd-pulse { fill: none !important; stroke: var(--yellow-500) !important; transform-box: fill-box; transform-origin: center; } .js .gfx.is-in .rd-pulse { animation: o-ping 3.2s ease-out infinite; } .rd-blip:nth-of-type(odd) .rd-pulse { animation-delay: 1.6s; }
+.rd-core { fill: var(--green-600); }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* network */
+.n-link { stroke: var(--green-500); stroke-opacity: 0.45; stroke-width: 1.5; } .js .gfx.is-in .n-link { stroke-dasharray: 4 6; animation: n-dash 3s linear infinite; }
+.n-node { cursor: pointer; } .n-halo { fill: var(--green-100); opacity: 0.8; transform-box: fill-box; transform-origin: center; transition: transform 0.3s var(--ease); } .n-node:hover .n-halo { transform: scale(1.35); }
+.n-c { fill: #fff; stroke: var(--green-600); stroke-width: 2.5; } .n-node--hub .n-c { stroke: var(--yellow-500); stroke-width: 3; } .n-head { fill: var(--yellow-400); } .n-body { fill: var(--green-500); }
+.n-packet { fill: var(--yellow-400); stroke: var(--yellow-500); stroke-width: 1.5; }
+.js .gfx.is-in .n-node--hub .n-halo { animation: o-ping 4s ease-out infinite; } .js .gfx.is-in .n-node:not(.n-node--hub) { animation: sh-float 7s ease-in-out infinite; } .js .gfx.is-in .n-node:nth-of-type(3n) { animation-delay: 1.8s; } .js .gfx.is-in .n-node:nth-of-type(3n+1) { animation-delay: 3.4s; }
+@keyframes n-dash { to { stroke-dashoffset: -20; } }
+
+/* flow */
+.f-box--a rect { fill: var(--yellow-100); stroke: var(--yellow-500); stroke-width: 1.5; } .f-box--b rect { fill: var(--green-100); stroke: var(--green-600); stroke-width: 1.5; }
+.f-coin { fill: var(--yellow-400); stroke: var(--yellow-500); stroke-width: 2; } .f-bar { fill: var(--green-500); stroke: var(--green-700); stroke-width: 1.5; transform-box: fill-box; transform-origin: bottom; }
+.js .gfx.is-in .f-bar { animation: f-rise 4.5s ease-in-out infinite alternate; } .js .gfx.is-in .f-bar:nth-of-type(2) { animation-delay: 0.4s; } .js .gfx.is-in .f-bar:nth-of-type(3) { animation-delay: 0.8s; } .js .gfx.is-in .f-bar:nth-of-type(4) { animation-delay: 1.2s; }
+.f-rail { fill: none; stroke: var(--green-200); stroke-width: 2; stroke-dasharray: 2 9; stroke-linecap: round; } .f-p { fill: var(--yellow-400); stroke: var(--yellow-500); stroke-width: 2; }
+@keyframes f-rise { from { transform: scaleY(0.85); } }
+
+/* stairs */
+.st-step { fill: var(--green-100); stroke: var(--green-600); stroke-width: 1.5; transition: fill 0.3s; } .st-step:hover { fill: var(--yellow-300); } .st-step--5 { fill: var(--green-500); }
+.js .gfx.is-in .st-step { animation: st-rise 0.9s var(--ease) backwards; transform-box: fill-box; transform-origin: bottom; } .js .gfx.is-in .st-step--2 { animation-delay: 0.12s; } .js .gfx.is-in .st-step--3 { animation-delay: 0.24s; } .js .gfx.is-in .st-step--4 { animation-delay: 0.36s; } .js .gfx.is-in .st-step--5 { animation-delay: 0.48s; }
+.st-hero { fill: var(--yellow-400); stroke: var(--yellow-500); stroke-width: 3; } .st-flag path { stroke: var(--green-700); stroke-width: 3; fill: none; stroke-linecap: round; } .st-flag .st-cloth { fill: var(--yellow-400); stroke: var(--yellow-500); stroke-width: 2; transform-box: fill-box; transform-origin: left center; } .js .gfx.is-in .st-cloth { animation: st-wave 1.8s ease-in-out infinite alternate; }
+@keyframes st-rise { from { transform: scaleY(0); } } @keyframes st-wave { to { transform: skewY(-8deg) scaleX(0.92); } }
+
+/* compass */
+.c-ring { fill: none; stroke: var(--line-strong); stroke-width: 1.5; } .c-ring--o { stroke-dasharray: 3 8; }
+.c-ticks line { stroke: var(--green-600); stroke-opacity: 0.4; stroke-width: 1.5; stroke-linecap: round; }
+.c-lab circle { fill: var(--yellow-400); stroke: var(--yellow-500); stroke-width: 2; } .c-lab .g-t { font-size: 15px; paint-order: stroke; stroke: #fff; stroke-width: 5px; stroke-linejoin: round; }
+.c-needle { transform-box: view-box; transform-origin: 200px 200px; } .c-n1 { fill: var(--green-500); stroke: var(--green-700); stroke-width: 1.5; stroke-linejoin: round; } .c-n2 { fill: var(--yellow-400); stroke: var(--yellow-500); stroke-width: 1.5; stroke-linejoin: round; } .c-hub { fill: #fff; stroke: var(--green-700); stroke-width: 3; }
+.js .gfx.is-in .c-needle { animation: c-sway 10s ease-in-out infinite; }
+@keyframes c-sway { 0%, 100% { transform: rotate(-30deg); } 50% { transform: rotate(34deg); } }
+
+/* target */
+.t-ring--1 { fill: var(--green-50); stroke: var(--green-600); stroke-width: 1.5; } .t-ring--2 { fill: #fff; stroke: var(--green-600); stroke-width: 1.5; } .t-ring--3 { fill: var(--green-200); stroke: var(--green-600); stroke-width: 1.5; } .t-ring--4 { fill: var(--yellow-400); stroke: var(--yellow-500); stroke-width: 2; }
+.t-ripple { fill: none; stroke: var(--green-600); stroke-width: 1.5; transform-box: fill-box; transform-origin: center; opacity: 0; } .t-arrow path { stroke: var(--green-700); stroke-width: 4; stroke-linecap: round; } .t-fletch { fill: var(--green-700); stroke: none !important; }
+.js .gfx.is-in .t-arrow { animation: t-fly 6s var(--ease) infinite; } .js .gfx.is-in .t-ripple { animation: o-ping 6s ease-out infinite; animation-delay: 0.8s; }
+@keyframes t-fly { 0% { transform: translate(70px, -70px); opacity: 0; } 12% { transform: translate(0, 0); opacity: 1; } 88% { transform: translate(0, 0); opacity: 1; } 100% { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) { .js .gfx .g * { animation: none !important; } .g-draw, .sh-check { stroke-dashoffset: 0 !important; } .js .gfx:not(.is-in) .g { opacity: 1; } }

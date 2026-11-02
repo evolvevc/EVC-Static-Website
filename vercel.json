@@ -1,0 +1,157 @@
+{
+  "framework": null,
+  "installCommand": "npm ci --include=dev",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "trailingSlash": true,
+  "redirects": [
+    {
+      "destination": "/raise-capital/",
+      "source": "/raise-capital-2/",
+      "permanent": true
+    },
+    {
+      "destination": "/investment-options/",
+      "source": "/_investment-options/",
+      "permanent": true
+    },
+    {
+      "destination": "/blogs/",
+      "source": "/blogs-2/",
+      "permanent": true
+    },
+    {
+      "destination": "/contact-us/",
+      "source": "/contact-test/",
+      "permanent": true
+    },
+    {
+      "destination": "/",
+      "source": "/sample-page/",
+      "permanent": true
+    },
+    {
+      "destination": "/blogs/",
+      "source": "/category/blogs/",
+      "permanent": true
+    },
+    {
+      "destination": "/industry-reports/",
+      "source": "/category/industry-reports/",
+      "permanent": true
+    },
+    {
+      "destination": "/whitepapers/",
+      "source": "/category/whitepapers/",
+      "permanent": true
+    },
+    {
+      "destination": "/feed.xml",
+      "source": "/feed/",
+      "permanent": true
+    },
+    {
+      "destination": "/",
+      "source": "/index.php",
+      "permanent": true
+    },
+    {
+      "destination": "/insights/",
+      "source": "/case-studies/",
+      "permanent": true
+    },
+    {
+      "destination": "/whitepapers/",
+      "source": "/pitch-deck-templates/",
+      "permanent": true
+    },
+    {
+      "destination": "/investor-faqs/",
+      "source": "/faq/",
+      "permanent": true
+    },
+    {
+      "destination": "/investor-faqs/",
+      "source": "/faqs/",
+      "permanent": true
+    },
+    {
+      "destination": "/about-us/",
+      "source": "/about/",
+      "permanent": true
+    },
+    {
+      "destination": "/contact-us/",
+      "source": "/contact/",
+      "permanent": true
+    },
+    {
+      "destination": "/terms-and-conditions/",
+      "source": "/terms/",
+      "permanent": true
+    },
+    {
+      "destination": "/assets/downloads/the-silent-shift-early-stage-liquidity-evolve-vc.pdf",
+      "source": "/wp-content/uploads/2025/11/The-Silent-Shift_-Early-Stage-Liquidity-Is-Re-Writing-VC-Economics-_-Evolve-VC_compressed.pdf",
+      "permanent": true
+    },
+    {
+      "destination": "/insights/",
+      "source": "/category/:path*",
+      "permanent": true
+    },
+    {
+      "destination": "/about-us/",
+      "source": "/author/:path*",
+      "permanent": true
+    },
+    {
+      "destination": "/insights/",
+      "source": "/tag/:path*",
+      "permanent": true
+    }
+  ],
+  "headers": [
+    {
+      "headers": [
+        {
+          "value": "default-src 'none'; script-src 'self' 'inline-speculation-rules' https://www.googletagmanager.com; style-src 'self'; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self'; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; manifest-src 'self'; media-src 'none'; object-src 'none'; frame-src 'none'; worker-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests",
+          "key": "Content-Security-Policy"
+        },
+        {
+          "value": "max-age=63072000; includeSubDomains; preload",
+          "key": "Strict-Transport-Security"
+        },
+        {
+          "value": "nosniff",
+          "key": "X-Content-Type-Options"
+        },
+        {
+          "value": "DENY",
+          "key": "X-Frame-Options"
+        },
+        {
+          "value": "strict-origin-when-cross-origin",
+          "key": "Referrer-Policy"
+        },
+        {
+          "value": "accelerometer=(), autoplay=(), camera=(), display-capture=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), publickey-credentials-get=(), usb=(), interest-cohort=()",
+          "key": "Permissions-Policy"
+        },
+        {
+          "value": "same-origin",
+          "key": "Cross-Origin-Opener-Policy"
+        },
+        {
+          "value": "same-origin",
+          "key": "Cross-Origin-Resource-Policy"
+        },
+        {
+          "value": "none",
+          "key": "X-Permitted-Cross-Domain-Policies"
+        }
+      ],
+      "source": "/(.*)"
+    }
+  ]
+}
