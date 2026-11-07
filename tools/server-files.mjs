@@ -1,5 +1,5 @@
 // Generates security headers + redirects for Apache (.htaccess) and Netlify / Cloudflare Pages (_headers, _redirects).
-import { SITE } from './lib/site.mjs';
+import { SITE, readableBrowser, contactEndpoint } from './lib/site.mjs';
 
 const endpointOrigin = (() => { try { return SITE.formEndpoint ? new URL(SITE.formEndpoint).origin : ''; } catch { return ''; } })();
 const GA_SCRIPT = 'https://www.googletagmanager.com';
@@ -7,15 +7,15 @@ const GA_CONNECT = 'https://*.google-analytics.com https://*.analytics.google.co
 
 export const CSP = [
   "default-src 'none'",
-  `script-src 'self' 'inline-speculation-rules' ${GA_SCRIPT}`,
+  `script-src 'self' 'inline-speculation-rules' ${GA_SCRIPT}${readableBrowser ? ' https://challenges.cloudflare.com' : ''}`,
   "style-src 'self'",
   `img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com`,
   "font-src 'self'",
-  `connect-src 'self' ${GA_CONNECT}${endpointOrigin ? ' ' + endpointOrigin : ''}`,
+  `connect-src 'self' ${GA_CONNECT}${endpointOrigin ? ' ' + endpointOrigin : ''}${contactEndpoint ? ' ' + new URL(contactEndpoint).origin : ''}`,
   "manifest-src 'self'",
   "media-src 'none'",
   "object-src 'none'",
-  "frame-src 'none'",
+  readableBrowser ? "frame-src https://challenges.cloudflare.com" : "frame-src 'none'",
   "worker-src 'none'",
   "frame-ancestors 'none'",
   "base-uri 'none'",

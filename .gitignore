@@ -11,3 +11,15 @@ keys/
 site.config.json
 .claude/
 .vercel/
+.vercel
+.dev.vars*
+.wrangler/
+*.sqlite*
+secrets.json
+*-secrets.json
+secrets/
+EVC-Contact-Secrets/
+readable-private.*
+readable-public.txt
+readable-kid.txt
+visitor-hmac.txt
