@@ -21,6 +21,23 @@ async function read(req) {
 }
 
 function recipient(req, env) {
+  // Server-only opt-in. Production always retains the ordinary recipient path.
+  if (env.CONTACT_PREVIEW_GMAIL_TEST !== undefined &&
+      env.VERCEL_ENV !== 'production' && env.VERCEL_TARGET_ENV !== 'production') {
+    if (env.CONTACT_PREVIEW_GMAIL_TEST !== '1' || env.VERCEL !== '1' ||
+        env.VERCEL_ENV !== 'preview' ||
+        (env.VERCEL_TARGET_ENV !== undefined && env.VERCEL_TARGET_ENV !== 'preview') ||
+        typeof env.VERCEL_DEPLOYMENT_ID !== 'string' || !env.VERCEL_DEPLOYMENT_ID.trim() ||
+        env.CONTACT_LOCAL_ACCOUNT_TEST !== undefined ||
+        (env.CONTACT_DELIVERY_MODE ?? 'attachment') !== 'attachment') return null;
+    try {
+      const origin = new URL(env.CONTACT_ORIGIN);
+      if (origin.protocol !== 'https:' || origin.origin !== env.CONTACT_ORIGIN ||
+          origin.hostname !== env.VERCEL_URL || !origin.hostname.endsWith('.vercel.app') ||
+          origin.port || new URL(req.url).origin !== origin.origin) return null;
+    } catch { return null; }
+    return 'evolvevc.2024@gmail.com';
+  }
   if (env.CONTACT_LOCAL_ACCOUNT_TEST === undefined) return 'contact@evolvevcap.com';
 
   // This opt-in is intentionally exclusive to the Windows loopback dev setup.
