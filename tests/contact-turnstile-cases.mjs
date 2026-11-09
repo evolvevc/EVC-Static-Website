@@ -10,7 +10,7 @@ export const cases = [
    let calls=0;
    check(await verify(async(url,options)=>{
     calls++; check(url==='https://challenges.cloudflare.com/turnstile/v0/siteverify');
-    check(options.method==='POST' && options.redirect==='error' && options.signal instanceof AbortSignal);
+    check(options.method==='POST' && options.redirect==='manual' && options.signal instanceof AbortSignal);
     check(options.headers['Content-Type']==='application/json');
     const body=JSON.parse(options.body); check(Object.keys(body).sort().join(',')==='response,secret');
     check(body.secret===env.CONTACT_TURNSTILE_SECRET && body.response===token);

@@ -10,6 +10,7 @@ const {Miniflare,Log,LogLevel,convertV4MiniflareOptions}=createRequire(require.r
 const b64=b=>Buffer.from(b).toString('base64');
 test('production wiring with intercepted services, SQLite and no external requests',{timeout:60000},async t=>{
  const config=JSON.parse(readFileSync(new URL('../wrangler.contact-production.json',import.meta.url),'utf8').replace(/^\uFEFF/,''));
+ assert.equal(config.vars.CONTACT_ENABLED,'false');assert.equal(config.vars.CONTACT_INGRESS_POLICY,'unverified');
  assert.deepEqual(config.migrations[0].new_sqlite_classes,['ContactBudget']);assert.deepEqual(config.routes,[]);assert.equal(config.workers_dev,false);assert.equal(config.preview_urls,false);
  const generate=()=>crypto.subtle.generateKey({name:'RSA-OAEP',hash:'SHA-256',modulusLength:2048,publicExponent:new Uint8Array([1,0,1])},true,['encrypt','decrypt']);
  const [pair,old]=await Promise.all([generate(),generate()]);
@@ -37,7 +38,7 @@ test('production wiring with intercepted services, SQLite and no external reques
  };
  const start=performance.now();const item=await seal();
  assert.deepEqual(await call(item),{status:202,sends:1});
- for(const [options,status] of [[{method:'GET'},405],[{path:'/api/contact'},404],[{path:'/other'},404],[{headers:{'content-type':'text/plain'}},415],[{raw:'x'.repeat(262145)},413],[{headers:{origin:'https://attacker.test'}},403],[{headers:{origin:''}},403],[{trusted:false},403],[{headers:{'cf-connecting-ip':'','x-forwarded-for':'192.0.2.1','x-real-ip':'192.0.2.1'}},403],[{headers:{'cf-connecting-ip':'invalid'}},403],[{headers:{'cf-worker':'untrusted.test'}},403],[{headers:{'x-test-missing-config':'1'}},503],[{headers:{'x-test-missing-budget':'1'}},503],[{headers:{'x-test-default-entry':'1','x-test-mode':'enabled'}},503],[{token:'invalid'},403],[{headers:{'x-test-disabled':'1'}},503],[{headers:{'x-test-wrong-pin':'1'}},503],[{headers:{'x-test-wrong-host':'1'}},503],[{headers:{'x-test-wrong-recipient':'1'}},503]]){
+ for(const [options,status] of [[{method:'GET'},405],[{path:'/api/contact'},404],[{path:'/other'},404],[{headers:{'content-type':'text/plain'}},415],[{raw:'x'.repeat(262145)},413],[{headers:{origin:'https://attacker.test'}},403],[{headers:{origin:''}},403],[{trusted:false},403],[{headers:{'cf-connecting-ip':'','x-forwarded-for':'192.0.2.1','x-real-ip':'192.0.2.1'}},403],[{headers:{'cf-connecting-ip':'invalid'}},403],[{headers:{'cf-worker':'untrusted.test'}},403],[{headers:{'x-test-missing-config':'1'}},503],[{headers:{'x-test-missing-budget':'1'}},503],[{headers:{'x-test-default-entry':'1','x-test-disabled':'1'}},503],[{token:'invalid'},403],[{headers:{'x-test-disabled':'1'}},503],[{headers:{'x-test-wrong-pin':'1'}},503],[{headers:{'x-test-wrong-host':'1'}},503],[{headers:{'x-test-wrong-recipient':'1'}},503]]){
   assert.deepEqual(await call(item,options),{status,sends:0},JSON.stringify(options));
  }
  assert.deepEqual(await call({...item,kid:'attachment'}),{status:400,sends:0});

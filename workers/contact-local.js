@@ -5,7 +5,14 @@ import {contactBudget} from '../server/contact-budget.js';
 import {limit} from '../server/envelope.js';
 import logoBytes from '../build-inputs/logo.png';
 export {ContactBudget} from '../server/contact-budget.js';
-const logoContent=()=>{let s='';for(const b of new Uint8Array(logoBytes))s+=String.fromCharCode(b);return btoa(s);};
+// Immutable public asset only: avoid re-encoding the PNG on every enquiry.
+let encodedLogo;
+const logoContent=()=>{
+ if(encodedLogo!==undefined)return encodedLogo;
+ const bytes=new Uint8Array(logoBytes);let s='';
+ for(let i=0;i<bytes.length;i+=0x8000)s+=String.fromCharCode(...bytes.subarray(i,i+0x8000));
+ return encodedLogo=btoa(s);
+};
 const headers={'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Content-Security-Policy':"default-src 'none'; frame-ancestors 'none'",'Referrer-Policy':'no-referrer','X-Frame-Options':'DENY'};
 const reply=(status,accepted=false)=>Response.json({accepted},{status,headers:{...headers,...(status===405?{Allow:'POST'}:{})}});
 // A code-owned ingress attestor is mandatory. request.cf or a header alone is NOT proof.

@@ -1,0 +1,14 @@
+{
+ "name":"evc-contact-cpu-synthetic",
+ "main":"workers/contact-cpu.js",
+ "compatibility_date":"2026-11-06",
+ "compatibility_flags":["nodejs_compat"],
+ "workers_dev":false,
+ "preview_urls":false,
+ "routes":[],
+ "build":{"command":"node tools/contact/cpu-fixtures.mjs --write"},
+ "durable_objects":{"bindings":[{"name":"CPU_BUDGET","class_name":"ContactBudget"}]},
+ "migrations":[{"tag":"v1-cpu-synthetic","new_sqlite_classes":["ContactBudget"]}],
+ "rules":[{"type":"Data","globs":["**/*.png"],"fallthrough":true}],
+ "observability":{"enabled":true,"head_sampling_rate":1,"logs":{"enabled":true,"invocation_logs":true}}
+}

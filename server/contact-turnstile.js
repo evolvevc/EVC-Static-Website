@@ -23,9 +23,11 @@ export function contactTurnstile(env, {fetch: send = globalThis.fetch, timeoutMs
       const verification = (async () => {
         try {
           const response = await send(endpoint,{method:'POST',headers:{'Content-Type':'application/json'},
-            body,redirect:'error',signal:controller.signal});
+            body,redirect:'manual',signal:controller.signal});
           if (controller.signal.aborted) { void response.body?.cancel().catch(() => {}); return false; }
           reader = response.body?.getReader();
+          // Never follow redirects or accept a redirected verification.
+          if (response.status >= 300 && response.status < 400) return false;
           if (response.status !== 200 || !reader || response.headers.get('content-type')?.split(';')[0].trim().toLowerCase() !== 'application/json' ||
               Number(response.headers.get('content-length')) > responseLimit) return false;
           const chunks = []; let size = 0;

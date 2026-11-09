@@ -38,10 +38,12 @@ export function contactResend(env,{fetch:send=globalThis.fetch,timeoutMs=8000}={
   timer=setTimeout(abort,timeoutMs);
   const attempt=(async()=>{
    try {
-    const response=await send(URL,{method:'POST',redirect:'error',signal:controller.signal,
+    const response=await send(URL,{method:'POST',redirect:'manual',signal:controller.signal,
      headers:{Authorization:'Bearer '+secret,'Content-Type':'application/json','Idempotency-Key':'contact/'+submission},body});
     if(controller.signal.aborted){void response.body?.cancel().catch(()=>{});return reply(503);}
     reader=response.body?.getReader();
+    // Unknown provider outcome: never follow or retry a redirect.
+    if(response.status>=300&&response.status<400)return reply(503);
     if([400,401,403,404,422,429].includes(response.status))return reply(response.status);
     if(response.status===409)return reply(409);
     if(response.status!==200||!reader||response.headers.get('content-type')?.split(';')[0].trim().toLowerCase()!=='application/json'||Number(response.headers.get('content-length'))>8192)return reply(503);
