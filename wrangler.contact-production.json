@@ -1,0 +1,58 @@
+{
+  "name": "evc-contact-production-disabled",
+  "main": "workers/contact-production.js",
+  "compatibility_date": "2026-11-06",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [],
+  "dev": {
+    "ip": "127.0.0.1",
+    "port": 8787,
+    "local_protocol": "http"
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "CONTACT_BUDGET",
+        "class_name": "ContactBudget"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1-contact-budget",
+      "new_sqlite_classes": [
+        "ContactBudget"
+      ]
+    }
+  ],
+  "rules": [
+    {
+      "type": "Data",
+      "globs": [
+        "**/*.png"
+      ],
+      "fallthrough": true
+    }
+  ],
+  "vars": {
+    "CONTACT_ENABLED": "false",
+    "CONTACT_INGRESS_POLICY": "unverified",
+    "CONTACT_DELIVERY_MODE": "readable-orchestrated",
+    "CONTACT_ORIGIN": "https://evolve-vc.vercel.app",
+    "CONTACT_TURNSTILE_HOSTNAME": "evolve-vc.vercel.app",
+    "CONTACT_TURNSTILE_ACTION": "contact_us",
+    "CONTACT_FROM": "onboarding@resend.dev",
+    "CONTACT_TO": "evolvevc.2024@gmail.com",
+    "CONTACT_READABLE_KID": "evc-readable-b2491e83-771e-4750-af0e-89899fe192e5",
+    "CONTACT_READABLE_PUBLIC_JWK": "eyJrdHkiOiJSU0EiLCJuIjoidTdtMFB5NjlKS3ZUWVJXaVJWV20zR0x2SFpSVWNtTDlJY0pPY05VSFVNYVlrMFRXSFJhdlM3M3R0QU9WdnJXUUloM1FNZWhlYlNpVUNKa1BBUU56QVpqUUJ0UUZfLWZwcFhnLUhtbG9vZDlMclNWalAwY01kcXdTMzJFbFFiZkNXcFp5M2ppamc3TVJobnc4UV9UNkZCVE9pZnhsbkdRLTBWdGlUQTJGa0pfVmlJbFRuel9DUmlGU3ByaVg5ODdUOWc5MXFVQ3pWSXBOT0MzcjNXT1BOUk5yQjV3NVBuZXQ1MXNYTjNKNVBUUGFobGlXWU03OXdaQnJNSV9TaVpaUzltNVNHYXZsNnhkSnVYT014bG55WGtZbDBBR3BPNmVkaHY5Uzg0VVM0YS1xaEJyN0EzT0hWSXFJWTFIdjFtMGNxaVdoUFdVcWJYRUQzck9yTm93QkttdzhoLWZtQVpxd2IyNFREOWk2Y0FZTGU3VUxra0hza3lHT3Z6bkU0ZUUxUlRwQ2dVMDYxZ25ueENxSG1rN1RlcXRaY2NUbEZUeTJPTGNHa3pLZHgzaWM0aHlsMThRRDRhY21oMGhabFdqVFJRbUdsYVV4Z2luTkdnUmJoejItOVV0NFVhWV9YZzRnbjdzbTV1SUt6SXQ4SzRDTGo0UzhPRTZqSUpRYmotbkYiLCJlIjoiQVFBQiIsImtpZCI6ImV2Yy1yZWFkYWJsZS1iMjQ5MWU4My03NzFlLTQ3NTAtYWYwZS04OTg5OWZlMTkyZTUiLCJhbGciOiJSU0EtT0FFUC0yNTYiLCJ1c2UiOiJlbmMiLCJrZXlfb3BzIjpbImVuY3J5cHQiXX0=",
+    "CONTACT_PUBLIC_JWK": "eyJrdHkiOiJSU0EiLCJuIjoieWlnNTdIVGtGZ1hzcTl4N1BWWDA4MnJmNGdhTHJJRnFMR3NqV1ZJM3VOYTRlVVRoaHM0UWRBdWdUVkFsTk1BazB4ZGs5XzQ0Tk1NVk5nM2Roblp6Y3Z5bkpOYUJJMnZnRm9oYjBjX1FZMFc5Q2p3UjJkd1dXRl9jVk1lVFhsZVF6ZGNkY2lPNW9GbExqU29zeWFyS0pvenRPRVJyRXJSSzVremk3QmpnMHRSOTBGbWdJWERsRk5ZUkR3RTc4THdLSF95NkJxVFlhbVF5N3Q1endObG53Qmc0Y0dvMjZXdGJodjJGX19palVyeTlZU0Zic0ZYQm5NVUV1VW00NlVsdktOOV9MenZBeDgtdGR5Smp4VzR4d1lvNVVDSG9YSWFHQm5uTmlBdjl6eVc5VXBrZGg4ajhJVE1UTDd5MFNUYWFMX2RiSlBsN0xTdGp3U0dQd3RSb3NCZUs2SWptWEQ1Q1Rsd1ZESi1sWkJLVk1GdTlQUE5lQ2NtbFVYWGFhTDBRYnRKelRPWXpRRkkwSDI0X2Q1NG00MHZBSFZHcUppd00yWFhRRV92Um9lWm1TX0dwM2xpTWtRbVJVUk1ybG1xVXhVaUw2YUkxSUFOYjRhQlZMMmQ3SFhvcE8yQm1uTXVPN1ZmcWIxb1pTcXVmNlhLLWFyLWhYMDNDdXFHbkF6U3AiLCJlIjoiQVFBQiIsImtpZCI6ImV2Yy1kZXYtMmU2MzU2MjktZGU2Ni00YWUyLTlmMzEtNTM1YzA1YTdkYzNkIiwiYWxnIjoiUlNBLU9BRVAtMjU2Iiwia2V5X29wcyI6WyJlbmNyeXB0Il19",
+    "CONTACT_VISITOR_LIMIT": "3",
+    "CONTACT_DAILY_LIMIT": "50",
+    "CONTACT_MONTHLY_LIMIT": "1500",
+    "CONTACT_ENDPOINT": "https://evc-contact-production-disabled.evolvevc-2024.workers.dev/api/contact/"
+  }
+}

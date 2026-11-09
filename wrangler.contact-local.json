@@ -1,0 +1,13 @@
+{
+  "name": "evc-contact-local-disabled",
+  "main": "workers/contact-local.js",
+  "compatibility_date": "2026-11-06",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [],
+  "dev": {"ip": "127.0.0.1", "port": 8787, "local_protocol": "http"},
+  "durable_objects": {"bindings": [{"name": "CONTACT_BUDGET", "class_name": "ContactBudget"}]},
+  "migrations": [{"tag": "v1-contact-budget", "new_sqlite_classes": ["ContactBudget"]}],
+  "rules": [{"type": "Data", "globs": ["**/*.png"], "fallthrough": true}]
+}

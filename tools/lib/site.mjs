@@ -1,10 +1,33 @@
 // Shared site config, helpers and layout partials.
+import {contactEndpoint as validateContactEndpoint} from '../../src/js/contact-endpoint.js';
+import { contactKeys } from '../../server/contact-mode.js';
+import { publicKey } from '../../server/envelope.js';
 import { readFileSync, existsSync } from 'node:fs';
+import { parseEnv } from 'node:util';
 import { fileURLToPath } from 'node:url';
 const ROOT = fileURLToPath(new URL('../../', import.meta.url));
 import { logoSvg, icon } from './brand.mjs';
 
 export const cfg = existsSync(ROOT + 'site.config.json') ? JSON.parse(readFileSync(ROOT + 'site.config.json', 'utf8')) : {};
+const localEnvPath = ROOT + '.env.local';
+const localBuild = !process.env.VERCEL_ENV || process.env.VERCEL_ENV === 'development';
+// Only the public build setting crosses into the static generator.
+const localContactKey = () => localBuild && existsSync(localEnvPath)
+  ? parseEnv(readFileSync(localEnvPath, 'utf8')).CONTACT_PUBLIC_JWK : '';
+const attachmentKey = (process.env.CONTACT_PUBLIC_JWK || localContactKey() || '').trim();
+export const readableBrowser = process.env.CONTACT_DELIVERY_MODE === 'readable-orchestrated';
+export const readableContact = process.env.CONTACT_DELIVERY_MODE === 'readable-local' || readableBrowser;
+export const contactEndpoint = readableBrowser && process.env.CONTACT_ENDPOINT ? validateContactEndpoint(process.env.CONTACT_ENDPOINT) : '';
+export const contactSitekey = readableBrowser ? (process.env.CONTACT_TURNSTILE_SITEKEY || '') : '';
+export const contactKid = readableBrowser ? (process.env.CONTACT_READABLE_KID || '') : '';
+if (readableBrowser) {
+ const selected=publicKey(process.env.CONTACT_READABLE_PUBLIC_JWK),old=publicKey(attachmentKey);
+ const modulus=value=>JSON.parse(Buffer.from(value,'base64')).n;
+ if(!contactSitekey || selected.kid!==contactKid || old.kid===selected.kid || modulus(attachmentKey)===modulus(process.env.CONTACT_READABLE_PUBLIC_JWK)) throw new Error('Invalid readable Contact public configuration');
+}
+if (!readableBrowser && process.env.CONTACT_DELIVERY_MODE && process.env.CONTACT_DELIVERY_MODE !== 'attachment') contactKeys({...process.env, CONTACT_PUBLIC_JWK:attachmentKey});
+export const contactKey = readableContact ? process.env.CONTACT_READABLE_PUBLIC_JWK : attachmentKey;
+if (contactKey) publicKey(contactKey);
 export const IMG = JSON.parse(readFileSync(ROOT + 'content/img-map.json', 'utf8'));
 
 export const SITE = {
