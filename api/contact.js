@@ -1,3 +1,4 @@
+import {demoAuthorized,claimDemo} from '../server/contact-demo.js';
 import { envelope, limit } from '../server/envelope.js';
 
 import { contactKeys } from '../server/contact-mode.js';
@@ -58,11 +59,13 @@ function recipient(req, env) {
 }
 
 // The production adapter always uses the fixed Resend URL. Tests inject a loopback transport.
-export async function handle(req, env, send = fetch, kms) {
+export async function handle(req, env, send = fetch, kms, claimNetwork = fetch) {
   if (req.method !== 'POST') return response(405);
   if (!env.CONTACT_ORIGIN || !env.CONTACT_PUBLIC_JWK || !env.RESEND_API_KEY || !env.CONTACT_FROM) return response(503);
   if (req.headers.get('origin') !== env.CONTACT_ORIGIN) return response(403);
-  const mailbox = recipient(req, env);
+  const demo=env.CONTACT_DEMO_ENABLED!==undefined;
+  if(demo && !await demoAuthorized(req,env))return response(403);
+  const mailbox = demo ? 'evolvevc.2024@gmail.com' : recipient(req, env);
   if (!mailbox) return response(403);
   if (req.headers.get('content-type')?.split(';')[0].trim() !== 'application/json') return response(415);
   if (Number(req.headers.get('content-length')) > limit) return response(413);
@@ -96,6 +99,8 @@ export async function handle(req, env, send = fetch, kms) {
       text:'Open the attached encrypted enquiry using the EVC offline reader.',
       attachments:[{filename:'contact.json', content:Buffer.from(JSON.stringify(item)).toString('base64')}]};
   }
+  // Claim once before sending. Unknown outcomes consume the grant permanently.
+  if(demo && !await claimDemo(env,claimNetwork))return response(403);
   try {
     const result = await send('https://api.resend.com/emails', {
       method:'POST', redirect:'error', signal:AbortSignal.timeout(10000),

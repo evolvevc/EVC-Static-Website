@@ -1,3 +1,4 @@
+import {demoHeaders} from './contact-demo-token.js';
 import {contactEndpoint} from './contact-endpoint.js';
 import { contactToken } from './contact-turnstile.js';
 /* Secure form handling.
@@ -101,7 +102,7 @@ function wire(form) {
         if (readable) attempt.uncertain = true;
         const controller = readable ? new AbortController() : null;
         if (controller) requestTimer = setTimeout(() => controller.abort(), 15000);
-        const res = await fetch(endpoint, { ...(controller ? {signal:controller.signal} : {}), method: 'POST', headers: { 'Content-Type': 'application/json' }, body, credentials: 'omit', referrerPolicy: 'no-referrer', mode: contact && !(readable && endpoint.startsWith('https://')) ? 'same-origin' : 'cors', redirect: contact ? 'error' : 'follow' });
+        const res = await fetch(endpoint, { ...(controller ? {signal:controller.signal} : {}), method: 'POST', headers: { 'Content-Type': 'application/json', ...demoHeaders(contact,readable,endpoint) }, body, credentials: 'omit', referrerPolicy: 'no-referrer', mode: contact && !(readable && endpoint.startsWith('https://')) ? 'same-origin' : 'cors', redirect: contact ? 'error' : 'follow' });
         if (readable && [400,403,413,415,429].includes(res.status)) attempt.uncertain = false;
         if (!res.ok || (contact && (res.status !== 202 || (await res.json()).accepted !== true))) throw new Error('HTTP ' + res.status);
         say('ok', form.dataset.success || 'Thank you. Your message was sent securely and our team will reply shortly.');

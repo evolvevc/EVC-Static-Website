@@ -1,3 +1,4 @@
+import {demoClaimEndpoint} from '../server/contact-demo-worker.js';
 import {contactCors} from '../server/contact-cors.js';
 import {contactEndpoint} from '../src/js/contact-endpoint.js';
 import {directContactIngress} from '../server/contact-ingress.js';
@@ -29,5 +30,6 @@ export function createProductionContact({attestIngress,fetch:network=globalThis.
 }
 // Both enablement and verified ingress policy are required. No synthetic transport.
 export default {fetch(request,env){
+ if(new URL(request.url).pathname==='/api/contact-demo/claim/')return demoClaimEndpoint(request,env);
  return createProductionContact({attestIngress:r=>directContactIngress(r,env)}).fetch(request,env);
 }};

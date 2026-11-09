@@ -1,13 +1,26 @@
+import {demoArmed,equal} from './contact-demo.js';
 import {DurableObject} from 'cloudflare:workers';
 import {ContactBudgetStore,DAY} from './contact-budget-store.js';
 // Internal binding/RPC only: no public fetch route and no sender implementation.
 export class ContactBudget extends DurableObject {
  constructor(ctx,env) {
-  super(ctx,env); this.storage=ctx.storage;
+  super(ctx,env); this.storage=ctx.storage; this.demoEnv=env;
   this.budget=new ContactBudgetStore(ctx.storage,{
    visitorLimit:env.CONTACT_VISITOR_LIMIT===undefined?3:Number(env.CONTACT_VISITOR_LIMIT),
    dailyLimit:env.CONTACT_DAILY_LIMIT===undefined?50:Number(env.CONTACT_DAILY_LIMIT),
    monthlyLimit:env.CONTACT_MONTHLY_LIMIT===undefined?1500:Number(env.CONTACT_MONTHLY_LIMIT)});
+ }
+ // Independent permanent singleton: never touched by normal budget cleanup.
+ claimDemo(hash){
+  if(!demoArmed(this.demoEnv)||this.demoEnv.CONTACT_ENABLED!=='false'||!equal(hash,this.demoEnv.CONTACT_DEMO_TOKEN_SHA256))return false;
+  try{return this.storage.transactionSync(()=>{
+   if(!demoArmed(this.demoEnv))return false;
+   const sql=this.storage.sql;
+   sql.exec('CREATE TABLE IF NOT EXISTS contact_demo_once(singleton INTEGER PRIMARY KEY CHECK(singleton=1), spent INTEGER NOT NULL)');
+   if(sql.exec('SELECT singleton FROM contact_demo_once WHERE singleton=1').toArray().length)return false;
+   sql.exec('INSERT INTO contact_demo_once VALUES(1,?)',Date.now());
+   return true;
+  });}catch{return false;}
  }
  async reserve(input){
   try {
