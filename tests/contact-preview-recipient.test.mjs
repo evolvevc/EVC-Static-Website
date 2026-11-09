@@ -16,7 +16,7 @@ test('Preview Gmail opt-in is server-only, attachment-only and production-safe',
  assert.deepEqual(mail.to,['evolvevc.2024@gmail.com']);
  assert.equal(Buffer.from(mail.attachments[0].content,'base64').toString(),body);
  for(const patch of [{CONTACT_PREVIEW_GMAIL_TEST:undefined},{VERCEL_ENV:'production',VERCEL_TARGET_ENV:'production'},{VERCEL_ENV:'preview',VERCEL_TARGET_ENV:'production'}]){
-  assert.equal((await handle(req(),{...env,...patch},send)).status,202);assert.deepEqual(mail.to,['contact@evolvevcap.com']);
+  assert.equal((await handle(req(),{...env,...patch},send)).status,202);assert.deepEqual(mail.to,['evolvevc.2024@gmail.com']);
  }
  for(const patch of [{CONTACT_PREVIEW_GMAIL_TEST:'true'},{VERCEL:undefined},{VERCEL_ENV:undefined},{VERCEL_ENV:'development'},{VERCEL_DEPLOYMENT_ID:undefined},{VERCEL_DEPLOYMENT_ID:''},{VERCEL_TARGET_ENV:'custom'},{VERCEL_URL:'other.vercel.app'},{CONTACT_LOCAL_ACCOUNT_TEST:'1'},{CONTACT_DELIVERY_MODE:'readable-orchestrated'}]){
   const before=calls;assert.equal((await handle(req(),{...env,...patch},send)).status,403);assert.equal(calls,before);
@@ -27,7 +27,19 @@ test('Preview Gmail opt-in is server-only, attachment-only and production-safe',
  assert.equal((await handle(req(JSON.stringify({...JSON.parse(body),to:'attacker@example.test'})),env,send)).status,400);
  assert.equal(calls,before);
  assert.equal((await handle(req(body,{'x-contact-recipient':'attacker@example.test','x-vercel-env':'preview'}),{...env,CONTACT_PREVIEW_GMAIL_TEST:undefined},send)).status,202);
- assert.deepEqual(mail.to,['contact@evolvevcap.com']);
+ assert.deepEqual(mail.to,['evolvevc.2024@gmail.com']);
+ // Testing sender works only behind existing explicit Preview restrictions.
+ assert.equal((await handle(req(),{...env,CONTACT_FROM:'onboarding@resend.dev'},send)).status,202);
+ for(const sender of ['onboarding@resend.dev','EVC <onboarding@resend.dev>',' ONBOARDING@RESEND.DEV ']){
+  for(const patch of [{CONTACT_PREVIEW_GMAIL_TEST:undefined},{VERCEL_ENV:'production',VERCEL_TARGET_ENV:'production'}]){
+   const count=calls;
+   assert.equal((await handle(req(),{...env,...patch,CONTACT_FROM:sender},send)).status,403);
+   assert.equal(calls,count);
+  }
+ }
+ for(const key of ['RESEND_API_KEY','CONTACT_FROM','CONTACT_ORIGIN','CONTACT_PUBLIC_JWK']){
+  const count=calls;assert.equal((await handle(req(),{...env,[key]:undefined},send)).status,503);assert.equal(calls,count);
+ }
  assert.equal((await handle(req(),env,async()=>Response.json({},{status:429}))).status,429);
  assert.equal((await handle(req(),env,async()=>{throw Error('synthetic');})).status,503);
 });

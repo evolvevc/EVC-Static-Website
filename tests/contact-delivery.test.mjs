@@ -57,7 +57,7 @@ test('configured template scopes its public key to Contact; the built site retai
 });
 test('round trip through a loopback Resend stub, fixed mail and stable retry',async () => {
   for (let n=0;n<2;n++) assert.equal((await handle(request(body),env,transport)).status,202);
-  assert.deepEqual(captured.email.to,['contact@evolvevcap.com']);
+  assert.deepEqual(captured.email.to,['evolvevc.2024@gmail.com']);
   assert.deepEqual(Object.keys(captured.email).sort(),['attachments','from','subject','text','to']);
   assert.equal(captured.email.attachments.length,1);
   const attachment = Buffer.from(captured.email.attachments[0].content,'base64').toString();
@@ -150,7 +150,7 @@ test('readable simulation authenticates, escapes, validates, retries and rolls b
   await t.test('fixed headers, CID logo, HTML and plain-text alternatives', async () => {
     assert.equal((await run()).status,202);
     const {email} = captured;
-    assert.deepEqual(email.to,['contact@evolvevcap.com']);
+    assert.deepEqual(email.to,['evolvevc.2024@gmail.com']);
     assert.equal(email.from,env.CONTACT_FROM);
     assert.equal(email.subject,'New client enquiry | Evolve Venture Capital');
     assert.deepEqual(Object.keys(email).sort(),['attachments','from','html','subject','text','to']);

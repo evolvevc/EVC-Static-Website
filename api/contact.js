@@ -38,7 +38,12 @@ function recipient(req, env) {
     } catch { return null; }
     return 'evolvevc.2024@gmail.com';
   }
-  if (env.CONTACT_LOCAL_ACCOUNT_TEST === undefined) return 'contact@evolvevcap.com';
+  if (env.CONTACT_LOCAL_ACCOUNT_TEST === undefined) {
+    // Resend's testing sender must not serve the unrestricted public form.
+    // Only the explicit Preview guard above or loopback guard below may use it.
+    if (/onboarding@resend\.dev/i.test(env.CONTACT_FROM)) return null;
+    return 'evolvevc.2024@gmail.com';
+  }
 
   // This opt-in is intentionally exclusive to the Windows loopback dev setup.
   // process.platform cannot be changed by a hosted Function environment variable.
