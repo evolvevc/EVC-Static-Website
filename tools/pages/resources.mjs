@@ -35,10 +35,10 @@ ${sec({ label: 'Explore Investing with Confidence', chapter: 'Confidence', cls: 
 export function whitepaperPage() {
   const path = '/whitepapers/';
   const body = `${pageHero({ crumbItems: [['Home', '/'], ['Whitepapers', path]], media: gfx('stack', { ratio: '4x3', tone: 'white', params: { labels: ['Climate', 'LP strategy', 'Market map'] } }), eyebrow: 'Resources', h1: '<span class="hl-y">White</span>papers', lead: 'Practical guides for founders and investors who want more than just theory. Empowering transformative ideas with customized financial solutions and expert guidance.' })}
-${sec({ label: 'Free to download', chapter: 'Library', h2: 'Practical Guides for Founders and Investors Who Want <span class="hl">More Than Just Theory</span>', lead: 'Empowering transformative ideas with customized financial solutions and expert guidance.', body: `<ol class="wp-list" data-stagger>${whitepapers.map((w, i) => `<li class="wp-row"><span class="wp-row__n" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span><div><span class="chip chip--tag">${w.tag}</span><h3>${esc(w.title)}</h3><p>${esc(w.blurb)}</p></div><button class="btn btn--sm btn--ghost" type="button" data-modal-open="wp-modal" data-title="${esc(w.title)}" data-file="${esc(w.file || '')}">Get the whitepaper ${icon('download')}</button></li>`).join('')}</ol>` })}
+${sec({ label: 'Free to download', chapter: 'Library', h2: 'Practical Guides for Founders and Investors Who Want <span class="hl">More Than Just Theory</span>', lead: 'Empowering transformative ideas with customized financial solutions and expert guidance.', body: `<ol class="wp-list" data-stagger>${whitepapers.map((w, i) => `<li class="wp-row"><span class="wp-row__n" aria-hidden="true">${String(i + 1).padStart(2, '0')}</span><div><span class="chip chip--tag">${w.tag}</span><h3>${esc(w.title)}</h3><p>${esc(w.blurb)}</p></div><button class="btn btn--sm btn--ghost" type="button" data-modal-open="wp-modal" data-title="${esc(w.title)}" data-resource-id="${esc(w.id || '')}">Get the whitepaper ${icon('download')}</button></li>`).join('')}</ol>` })}
 <dialog class="modal" id="wp-modal" aria-labelledby="wp-modal-title">
   <div class="modal__head"><div><p class="eyebrow">Free download</p><h2 class="h3" id="wp-modal-title" data-modal-title>Download the whitepaper</h2></div><button class="modal__close" type="button" data-modal-close aria-label="Close">${icon('close')}</button></div>
-  <div class="modal__body"><form class="form" data-secure-form="whitepaper" data-success="Thank you. Your download request was sent securely." novalidate aria-label="Whitepaper request form">
+  <div class="modal__body"><form class="form" data-secure-form="whitepaper" data-success="Your selected whitepaper has been submitted to our email service." novalidate aria-label="Whitepaper request form">
     <div class="field"><label for="w-name">Full name <span class="req">*</span></label><input id="w-name" name="full-name" autocomplete="name" required><span class="err" aria-live="polite"></span></div>
     <div class="field"><label for="w-company">Company</label><input id="w-company" name="company" autocomplete="organization"></div>
     <div class="field"><label for="w-email">Work email <span class="req">*</span></label><input id="w-email" name="your-email" type="email" autocomplete="email" required><span class="err" aria-live="polite"></span></div>
@@ -46,7 +46,7 @@ ${sec({ label: 'Free to download', chapter: 'Library', h2: 'Practical Guides for
     <div class="hp" aria-hidden="true"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
     <div class="field"><label class="check"><input type="checkbox" name="consent" required> <span>I agree to be contacted about this whitepaper, as described in the <a href="/privacy-policy/">Privacy Policy</a>.</span></label><span class="err" aria-live="polite"></span></div>
     <button class="btn" type="submit">Send me the whitepaper ${icon('arrow')}</button>
-    <p class="form__secure">${icon('lock')}<span>Your details are encrypted in your browser before sending.</span></p>
+    <p class="form__secure">${icon('lock')}<span>Your details are sent over HTTPS and processed by our website and Google email service to deliver your selected whitepaper.</span></p>
     <div class="form__status" role="status"></div>
   </form></div>
 </dialog>`;

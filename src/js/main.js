@@ -177,7 +177,7 @@ function initModals() {
   $$('[data-modal-open]').forEach((b) => b.addEventListener('click', () => {
     const d = document.getElementById(b.dataset.modalOpen); if (!d) return;
     const title = $('[data-modal-title]', d), hid = $('input[name="resource"]', d);
-    if (b.dataset.title) { if (title) title.textContent = b.dataset.title; if (hid) hid.value = b.dataset.title; }
+    if (b.dataset.title) { if (title) title.textContent = b.dataset.title; if (hid) hid.value = b.dataset.resourceId || b.dataset.title; }
     const f = $('form', d); if (f) f.dataset.download = b.dataset.file || '';
     d.showModal?.(); $('input:not([type=hidden])', d)?.focus();
   }));
