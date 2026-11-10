@@ -6,7 +6,9 @@ if (process.env.VERCEL_ENV === 'production') {
   try {
     const hmacValid = validWhitepaperHmac(process.env);
     const urlValid = validWhitepaperUrl(process.env);
-    if (!hmacValid) console.error('WP_STARTUP_HMAC_FORMAT_INVALID');
+    const hmac = process.env.WHITEPAPER_HMAC_SECRET;
+    if (hmac === undefined || hmac === null || hmac === '') console.error('WP_STARTUP_HMAC_MISSING');
+    else if (!hmacValid) console.error('WP_STARTUP_HMAC_MALFORMED');
     if (!urlValid) console.error('WP_STARTUP_URL_FORMAT_INVALID');
     if (hmacValid && urlValid) console.error('WP_STARTUP_CONFIG_FORMAT_VALID');
   } catch { /* Diagnostics must not affect request behavior. */ }
