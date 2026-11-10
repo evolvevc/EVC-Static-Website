@@ -3,11 +3,12 @@
 No deployment has been performed. This diagnostic checks format only, using the exact same exported predicates as the submission handler. It does not prove secret equality with Apps Script, deployment access, PDF mapping, or mail delivery.
 
 On each Production function module initialization (`VERCEL_ENV === 'production'`), the API module emits fixed codes to server logs:
-- `WP_STARTUP_HMAC_FORMAT_INVALID`: HMAC predicate failed.
+- `WP_STARTUP_HMAC_MISSING`: HMAC value is undefined, null, or empty.
+- `WP_STARTUP_HMAC_MALFORMED`: HMAC value exists but fails the unchanged 64-character hexadecimal predicate.
 - `WP_STARTUP_URL_FORMAT_INVALID`: URL predicate failed.
 - `WP_STARTUP_CONFIG_FORMAT_VALID`: both predicates passed.
 
-Both invalid codes are emitted if both fail. No values, lengths, hashes, URLs, exceptions, IDs or request content are logged. Preview/local startup does not log. Logging failure is swallowed. This is once per module instance, not globally once per deployment; cold starts/scaling can repeat it. Warm requests do not rerun it.
+The applicable HMAC failure code and URL failure code are both emitted if both checks fail. No values, lengths, hashes, URLs, exceptions, IDs or request content are logged. Preview/local startup does not log. Logging failure is swallowed. This is once per module instance, not globally once per deployment; cold starts/scaling can repeat it. Warm requests do not rerun it.
 
 After separate approval, deploy this reviewed source to the intended existing Vercel Production project with the existing configuration. Open protected Vercel runtime logs filtered to that exact deployment and the whitepaper function. Do not pull or print environment values. The new deployment's results cannot reconstruct the historical failed deployment's environment.
 
