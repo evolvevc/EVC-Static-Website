@@ -1,6 +1,10 @@
 import { createHmac, randomUUID } from 'node:crypto';
 import { WHITEPAPERS } from './whitepaper-catalogue.js';
 
+export const validWhitepaperHmac = env => /^[a-f0-9]{64}$/i.test(env.WHITEPAPER_HMAC_SECRET || '');
+export const validWhitepaperUrl = env => /^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(env.WHITEPAPER_APPS_SCRIPT_URL || '');
+export const whitepaperMethodNotAllowed = () => reply(405, 'rejected');
+
 export function validate(data) {
   if (!data || typeof data !== 'object' || Array.isArray(data) || Object.keys(data).some(k => !['name','company','email','resourceId','consent','website'].includes(k))) throw Error('Invalid');
   const clean = (v, max, optional = false) => {
@@ -23,7 +27,7 @@ export function sign(payload, secret, timestamp = Date.now(), requestId = random
 const diagnostic = code => { try { console.error(code); } catch {} };
 const reply = (status, state, delivery) => Response.json({state, ...(delivery ? {delivery} : {})}, {status, headers:{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});
 export async function handle(req, env, send = fetch) {
-  if (req.method !== 'POST') return reply(405, 'rejected');
+  if (req.method !== 'POST') return whitepaperMethodNotAllowed();
   if (!/^https:\/\/[^/]+$/.test(env.WHITEPAPER_ORIGIN || '') || req.headers.get('origin') !== env.WHITEPAPER_ORIGIN || new URL(req.url).origin !== env.WHITEPAPER_ORIGIN || (req.headers.get('sec-fetch-site') && req.headers.get('sec-fetch-site') !== 'same-origin')) return reply(403, 'rejected');
   if (!/^application\/json(?:\s*;\s*charset=utf-8)?$/i.test(req.headers.get('content-type') || '')) return reply(415, 'rejected');
   if (Number(req.headers.get('content-length')) > 4096) return reply(413, 'rejected');
@@ -34,10 +38,10 @@ export async function handle(req, env, send = fetch) {
     for (;;) { const {done,value} = await reader.read(); if (done) break; size += value.length; if (size > 4096) { await reader.cancel(); return reply(413, 'rejected'); } chunks.push(value); }
     payload = validate(JSON.parse(Buffer.concat(chunks).toString('utf8')));
   } catch { return reply(400, 'rejected'); }
-  if (!/^[a-f0-9]{64}$/i.test(env.WHITEPAPER_HMAC_SECRET || '')) {
+  if (!validWhitepaperHmac(env)) {
     diagnostic('WP_HMAC_FORMAT_INVALID'); return reply(503, 'unavailable');
   }
-  if (!/^https:\/\/script\.google\.com\/macros\/s\/[A-Za-z0-9_-]+\/exec$/.test(env.WHITEPAPER_APPS_SCRIPT_URL || '')) {
+  if (!validWhitepaperUrl(env)) {
     diagnostic('WP_URL_FORMAT_INVALID'); return reply(503, 'unavailable');
   }
   let failureCode = 'WP_RUNTIME_EXCEPTION';
