@@ -1,3 +1,4 @@
+import { wireWhitepaper } from './whitepaper-form.js';
 import {demoHeaders} from './contact-demo-token.js';
 import {contactEndpoint} from './contact-endpoint.js';
 import { contactToken } from './contact-turnstile.js';
@@ -54,6 +55,7 @@ export async function contactAttempt(data, key) {
 }
 
 function wire(form) {
+  if (form.dataset.secureForm === 'whitepaper') { wireWhitepaper(form); return; }
   const contact = form.dataset.secureForm === 'contact';
   const readable = contact && form.dataset.contactMode === 'readable-orchestrated';
   let attempt;
