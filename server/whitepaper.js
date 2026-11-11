@@ -53,15 +53,17 @@ export async function handle(req, env, send = fetch) {
     failureCode = 'WP_UPSTREAM_TRANSPORT_FAILURE';
     const result = await send(url, options);
     failureCode = 'WP_UPSTREAM_RESPONSE_FAILURE';
-    if (!result.ok) { diagnostic('WP_UPSTREAM_RESPONSE_FAILURE'); return reply(503, 'uncertain'); }
+    if (!result.ok) { diagnostic('WP_UPSTREAM_HTTP_FAILURE'); return reply(503, 'uncertain'); }
+    failureCode = 'WP_UPSTREAM_JSON_FAILURE';
     const output = await result.json();
-    if (output.requestId !== envelope.requestId) { diagnostic('WP_UPSTREAM_RESPONSE_FAILURE'); return reply(503, 'uncertain'); }
+    failureCode = 'WP_UPSTREAM_RESPONSE_FAILURE';
+    if (!output || output.requestId !== envelope.requestId) { diagnostic('WP_UPSTREAM_REQUEST_ID_INVALID'); return reply(503, 'uncertain'); }
     if (output.state === 'accepted' && ['submitted','unknown','not_attempted'].includes(output.admin) && ['submitted','unknown','not_attempted'].includes(output.visitor)) return reply(202, 'accepted', {admin:output.admin,visitor:output.visitor});
     if (['duplicate','limited','unavailable','rejected'].includes(output.state)) {
-      if (output.state === 'unavailable' || output.state === 'rejected') diagnostic('WP_UPSTREAM_RESPONSE_FAILURE');
+      if (output.state === 'unavailable' || output.state === 'rejected') diagnostic(output.state === 'rejected' ? 'WP_UPSTREAM_REJECTED' : 'WP_UPSTREAM_UNAVAILABLE');
       return reply(output.state === 'limited' ? 429 : output.state === 'duplicate' ? 409 : 503, output.state);
     }
-    diagnostic('WP_UPSTREAM_RESPONSE_FAILURE');
+    diagnostic(output.state === 'uncertain' ? 'WP_UPSTREAM_PROCESSING_UNCERTAIN' : 'WP_UPSTREAM_CONTRACT_INVALID');
     return reply(503, 'uncertain');
   } catch { diagnostic(failureCode); return reply(503, 'uncertain'); }
 }
