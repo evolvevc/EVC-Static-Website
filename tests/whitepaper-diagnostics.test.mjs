@@ -31,13 +31,14 @@ test('runtime, transport and response failures remain generic and log no excepti
   assert.equal(calls,0);assert.deepEqual(logs,[['WP_RUNTIME_EXCEPTION']]);timeout.mock.restore();
   const cases=[
     [async()=>{throw Error('private transport URL and personal data');},'WP_UPSTREAM_TRANSPORT_FAILURE','uncertain'],
-    [async()=>new Response('private upstream body',{status:500}),'WP_UPSTREAM_RESPONSE_FAILURE','uncertain'],
-    [async()=>new Response('private invalid JSON'),'WP_UPSTREAM_RESPONSE_FAILURE','uncertain'],
-    [async()=>Response.json(null),'WP_UPSTREAM_RESPONSE_FAILURE','uncertain'],
-    [async()=>Response.json({requestId:'private-wrong-id'}),'WP_UPSTREAM_RESPONSE_FAILURE','uncertain'],
-    [response('unavailable'),'WP_UPSTREAM_RESPONSE_FAILURE','unavailable'],
-    [response('rejected'),'WP_UPSTREAM_RESPONSE_FAILURE','rejected'],
-    [response('private-unrecognized-state'),'WP_UPSTREAM_RESPONSE_FAILURE','uncertain']
+    [async()=>new Response('private upstream body',{status:500}),'WP_UPSTREAM_HTTP_FAILURE','uncertain'],
+    [async()=>new Response('private invalid JSON'),'WP_UPSTREAM_JSON_FAILURE','uncertain'],
+    [async()=>Response.json(null),'WP_UPSTREAM_REQUEST_ID_INVALID','uncertain'],
+    [async()=>Response.json({requestId:'private-wrong-id'}),'WP_UPSTREAM_REQUEST_ID_INVALID','uncertain'],
+    [response('uncertain'),'WP_UPSTREAM_PROCESSING_UNCERTAIN','uncertain'],
+    [response('unavailable'),'WP_UPSTREAM_UNAVAILABLE','unavailable'],
+    [response('rejected'),'WP_UPSTREAM_REJECTED','rejected'],
+    [response('private-unrecognized-state'),'WP_UPSTREAM_CONTRACT_INVALID','uncertain']
   ];
   for(const [send,code,state] of cases) {
     logs.length=0;calls=0;
